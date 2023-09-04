@@ -4,64 +4,54 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float movementSpeed = 10f;
-    float xRange =7f;
-    float yRange =5f;
-    // Update is called once per frame
-    void Update()
-    {
-        PlayerFlow();
-    }
+  [SerializeField] float movementSpeed = 10f;
+  float xRange = 5f;
+  float yRange = 3.5f;
+  float positionPitchFactor = -2f;
+  float controlPitchFactor = -10f;
 
-    void PlayerFlow()
-    {
-        float horizontalFlow = Input.GetAxis("Horizontal");
-        float verticalFlow = Input.GetAxis("Vertical");
-        float xOffset = horizontalFlow * Time.deltaTime * movementSpeed;
-        float yOffset = verticalFlow * Time.deltaTime * movementSpeed;
-        float newXPos = transform.localPosition.x + xOffset;
-        float clampedXPos = Mathf.Clamp(newXPos, -xRange, xRange);
-        float newYPos = transform.localPosition.y + yOffset;
-        float clampedYPos = Mathf.Clamp(newYPos, -yRange, yRange);
-       
-        transform.localPosition = new Vector3
-        (clampedXPos,
-         clampedYPos,
-         transform.localPosition.z);
-      
-    }
+  float positionYawFactor = -5f ,controlYawFactor = -2f;
+  float positionRollFactor = 50f;
+  float horizontalFlow, verticalFlow;
+  // Update is called once per frame
+  void Update()
+  {
+    PlayerTranslation();
+    PlayerRotation();
+  }
+
+  void PlayerTranslation()
+  {
+     horizontalFlow = Input.GetAxis("Horizontal");
+     verticalFlow = Input.GetAxis("Vertical");
+
+    float xOffset = horizontalFlow * Time.deltaTime * movementSpeed;
+    float yOffset = verticalFlow * Time.deltaTime * movementSpeed;
+
+    float newXPos = transform.localPosition.x + xOffset;    
+    float clampedXPos = Mathf.Clamp(newXPos, -xRange, xRange);
+
+    float newYPos = transform.localPosition.y + yOffset;
+    float clampedYPos = Mathf.Clamp(newYPos, -yRange, yRange);
+
+    transform.localPosition = new Vector3(
+    clampedXPos,
+     clampedYPos,
+     transform.localPosition.z);
+
+  }
+
+  void PlayerRotation()
+  {
+    float pitchDueToPosition = transform.localPosition.y * positionPitchFactor;
+    float pitchDueToVerticalFlowControl =  verticalFlow * controlPitchFactor;
+
+    float pitch = pitchDueToPosition  + pitchDueToVerticalFlowControl,
+     yaw = transform.localPosition.x * -positionYawFactor + horizontalFlow * controlYawFactor,
+     roll = horizontalFlow * -positionRollFactor;
+    // pitch, yaw, roll
+    transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+  }
+
 }
 
- //float newXPosN = transform.localPosition.x - xOffset;
-        //float newYPosN = transform.localPosition.y - yOffset;
-
-      /*  
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
-        {
-        transform.localPosition = new Vector3
-        (newXPosP,
-         transform.localPosition.y,
-         transform.localPosition.z);
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-        transform.localPosition = new Vector3
-        (newXPosN,
-         transform.localPosition.y,
-         transform.localPosition.z);
-        }
-        else if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
-        {
-             transform.localPosition = new Vector3
-        (transform.localPosition.x,
-         newYPosP,
-         transform.localPosition.z);
-        }
-      /*  else if (Input.GetKey(KeyCode.S))
-        {
-        transform.localPosition = new Vector3
-        (transform.localPosition.x,
-         newYPosN,
-         transform.localPosition.z);
-        }*/
-      //  else{ }
