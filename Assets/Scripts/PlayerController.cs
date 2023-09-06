@@ -3,21 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
-{
+{ 
+  [Header("General Setup Settings")]
+  [Tooltip("How fast ship moves up,down,left,right based upon player input")]
   [SerializeField] float movementSpeed = 10f;
-  float xRange = 5f;
-  float yRange = 3.5f;
-  float positionPitchFactor = -2f;
-  float controlPitchFactor = -10f;
+  [Tooltip("How fast ship moves horizontally")]
+  [SerializeField]float xRange = 5f;
+  [Tooltip("How fast ship moves vertically")]
+  [SerializeField]float yRange = 3.5f;
+  [Header("Laser gun array")]
+  [Tooltip("Add all player lasers here")]
+  [SerializeField] GameObject[] lasers;
+  
+  [Header("Screen position based tuning")]
+  [SerializeField]float positionPitchFactor = -2f;
+  [SerializeField]float positionYawFactor = -5f;
+  [SerializeField]float positionRollFactor = 50f;  
 
-  float positionYawFactor = -5f ,controlYawFactor = -2f;
-  float positionRollFactor = 50f;
-  float horizontalFlow, verticalFlow;
+  [Header("Player input based tuning")]
+  [SerializeField]float controlPitchFactor = -10f;
+  [SerializeField]float controlYawFactor = -2f;  
+  [Header("Player horizontal and vertical throw values")]
+  [SerializeField]float horizontalFlow;
+  [SerializeField] float verticalFlow;
+  
   // Update is called once per frame
   void Update()
   {
     PlayerTranslation();
     PlayerRotation();
+    ProcessFire();
   }
 
   void PlayerTranslation()
@@ -52,6 +67,32 @@ public class PlayerController : MonoBehaviour
     // pitch, yaw, roll
     transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
   }
+
+  void ProcessFire()
+  {
+    
+    if(Input.GetButton("Fire1")||Input.GetKey(KeyCode.Space))
+    {
+      ActivateLasers(true);
+    }
+    else
+    {
+      ActivateLasers(false);
+    }
+  
+  
+  }
+
+  void ActivateLasers(bool isActive){
+
+    foreach(GameObject laser in lasers){
+
+      var emissionModule = laser.GetComponent<ParticleSystem>().emission;
+      emissionModule.enabled = isActive;
+    }
+
+  }
+   
 
 }
 
