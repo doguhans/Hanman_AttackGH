@@ -6,8 +6,13 @@ public class ViewChanger : MonoBehaviour
 {
     
     [SerializeField] GameObject[] cams; 
-    int currentIndex = 0;
-
+    int currentIndex;
+    
+    void Start() {
+        currentIndex = GetComponent<ViewChanger>().gameObject.layer;
+           
+    }
+ 
     // Update is called once per frame
     void Update()
     {
@@ -16,23 +21,23 @@ public class ViewChanger : MonoBehaviour
     void ChangeView()
     {
         if(Input.GetKeyDown(KeyCode.V))
-        {   
+        {    
             cams[currentIndex].SetActive(false);
-            currentIndex++;
+            currentIndex++;  
             
             if(currentIndex < cams.Length)
-            {
-                
-                
+            {         
+                                  
                 cams[currentIndex].SetActive(true);
             }
             else
             {
                 currentIndex = 0;
-                if(cams.Length > 0)
-                {cams[currentIndex].SetActive(true);
-                }
+                
+                cams[currentIndex].SetActive(true);
+                
             }
+            
         }
     }
 }

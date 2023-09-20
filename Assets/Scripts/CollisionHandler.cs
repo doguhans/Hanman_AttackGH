@@ -4,58 +4,67 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
-{   
-  private void Update() {
-    ReloadOnKeyDown();
-  }
-   /* void OnCollisionEnter(Collision other) {
-        switch(other.gameObject.tag)
-        {
-            case "Enemy":
-            Debug.Log("You have collided with an enemy ship!");
-            ReloadScene();
-            break;
-            case "Bridge":
-            Debug.Log("You have bumped into a bridge g.!!");
-            ReloadScene();
-            break;
-            default:
-            Debug.Log("Nothing happened.");
-            break;
-        }
-    }*/
+{
+    [SerializeField] ParticleSystem blowUpParticles;
+    [SerializeField] GameObject tailToDestroy;
+    
+    void Update()
+    {
+        ReloadOnKeyDown();
+    }
+
 
     void ReloadOnKeyDown()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             ReloadScene();
         }
     }
-    void OnTriggerEnter(Collider other) {
-        switch(other.gameObject.tag)
-        {
-            case "Enemy":
-            Debug.Log("You have collided with an enemy ship!");
-            Invoke("ReloadScene", 2f);
-            break;
-            case "Bridge":
-            Debug.Log("You have bumped into a bridge g.!!");
-            Invoke("ReloadScene", 2f);
-            break;
-            default:
-            Debug.Log("Nothing happened.");
-            break;
-        }
+    void OnTriggerEnter(Collider other)
+    {
+
+        StartCrashSequence(other);
+
     }
 
+    void StartCrashSequence(Collider other)
+    {        
+        switch (other.gameObject.tag)
+        {
+            case "Enemy":
+               // Debug.Log("You have collided with an enemy ship!");
+               BlowUpSequence();
+                Invoke("ReloadScene", 2f);
+                break;
+            case "Bridge":
+               // Debug.Log("You have bumped into a bridge g.!!");
+               BlowUpSequence();
+                Invoke("ReloadScene", 2f);
+                break;
+            default:
+           
+               // Debug.Log("Nothing happened.");
+                  blowUpParticles.Play();
+               // Invoke("ReloadScene", 2f);
+                break;
+        }
+    }
+    void BlowUpSequence()
+    {   GetComponent<PlayerController>().enabled = false;
+        GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<BoxCollider>().enabled = false;
+        tailToDestroy.GetComponent<MeshRenderer>().enabled = false;
+        blowUpParticles.Play();
+       
+    }
     void ReloadScene()
-    {   
-        
-        gameObject.GetComponent<PlayerController>().enabled = false;
-        int initialScene =SceneManager.GetActiveScene().buildIndex;
+    {
+
+
+        int initialScene = SceneManager.GetActiveScene().buildIndex;
         Debug.Log($"{initialScene} numbered scene reloading...");
         SceneManager.LoadScene(initialScene);
-    }   
+    }
 
 }

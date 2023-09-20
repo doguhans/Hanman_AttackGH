@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
   [Header("Player horizontal and vertical throw values")]
   [SerializeField]float horizontalFlow;
   [SerializeField] float verticalFlow;
-  
+
+ 
   // Update is called once per frame
   void Update()
   {
@@ -46,8 +47,8 @@ public class PlayerController : MonoBehaviour
     float newXPos = transform.localPosition.x + xOffset;    
     float clampedXPos = Mathf.Clamp(newXPos, -xRange, xRange);
 
-    float newYPos = transform.localPosition.y + yOffset;
-    float clampedYPos = Mathf.Clamp(newYPos, -yRange, yRange);
+    float newYPos = transform.localPosition.y - yOffset;
+    float clampedYPos = Mathf.Clamp(newYPos, -yRange, yRange+2);
 
     transform.localPosition = new Vector3(
     clampedXPos,
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
     float pitchDueToPosition = transform.localPosition.y * positionPitchFactor;
     float pitchDueToVerticalFlowControl =  verticalFlow * controlPitchFactor;
 
-    float pitch = pitchDueToPosition  + pitchDueToVerticalFlowControl,
+    float pitch = pitchDueToPosition  - pitchDueToVerticalFlowControl,
      yaw = transform.localPosition.x * -positionYawFactor + horizontalFlow * controlYawFactor,
      roll = horizontalFlow * -positionRollFactor;
     // pitch, yaw, roll
